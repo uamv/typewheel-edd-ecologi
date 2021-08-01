@@ -2,7 +2,7 @@
 Should you like to show your appreciation for this contribution to the community, I ask that you [help plant this forest](https://ecologi.com/gravityhopper?r=6102fa245a5109238b1f2de6) for [Gravity Hopper](https://gravityhopper.com) – the first site upon which this plugin has run.
 
 ## Installation & Setup
-After installation, please be sure to do the following in order to begin processing impact requests to the ecologi API.
+After installation, do the following to begin processing impact requests to the [ecologi API](https://docs.ecologi.com/docs/public-api-docs/API/Impact-API.v1.yaml).
 
 ### Retrieve API Key
 Within your ecologi account, create an API key for usage with EDD purchases.
@@ -25,13 +25,14 @@ add_filter( 'typewheel_edd_ecologi_impact', function( $impact ) {
             '42'  => [ 'trees' => 4, 'carbon' => 0 ],
             '75'  => [ 'trees' => 7, 'carbon' => 0 ],
             '100' => [ 'trees' => 11, 'carbon' => 0 ],
-            '175' => [ 'trees' => 20, 'carbon' => 0 ]
+            '150' => [ 'trees' => 20, 'carbon' => 0 ]
         ),
         'edd_renewal' => array(
-            '0'   => [ 'trees' => 0, 'carbon' => 75 ],
-            '42'  => [ 'trees' => 0, 'carbon' => 150 ],
-            '75'  => [ 'trees' => 0, 'carbon' => 250 ],
-            '100' => [ 'trees' => 0, 'carbon' => 500 ]
+            '0'   => [ 'trees' => 1, 'carbon' => 75 ],
+            '42'  => [ 'trees' => 2, 'carbon' => 150 ],
+            '75'  => [ 'trees' => 3, 'carbon' => 250 ],
+            '100' => [ 'trees' => 4, 'carbon' => 500 ],
+            '150' => [ 'trees' => 5, 'carbon' => 500 ]
         )
     );
 

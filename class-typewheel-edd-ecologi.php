@@ -35,7 +35,7 @@ class Typewheel_EDD_Ecologi {
 
         $ecologi = apply_filters( 'typewheel_edd_ecologi_impact', [] );
 
-        if ( $payment->mode == 'test' && defined( 'TYPEWHEEL_EDDE_ECOLOGI_API_KEY' ) && is_array( $ecologi ) && array_key_exists( 'edd_purchase', $ecologi ) ) {
+        if ( $payment->mode != 'test' && defined( 'TYPEWHEEL_EDDE_ECOLOGI_API_KEY' ) && is_array( $ecologi ) && array_key_exists( 'edd_purchase', $ecologi ) ) {
 
             $breakpoints = array_reverse( $ecologi['edd_purchase'], true );
 
@@ -89,8 +89,7 @@ class Typewheel_EDD_Ecologi {
                 'Content-Type'  => 'application/json'
             ),
             'body' => json_encode( array(
-                'number' => $trees,
-                'test' => true
+                'number' => $trees
             ) )
         ) );
 
@@ -128,8 +127,7 @@ class Typewheel_EDD_Ecologi {
             ),
             'body' => json_encode( array(
                 'number' => $kilograms,
-                'units' => 'KG',
-                'test' => true
+                'units' => 'KG'
             ) )
         ) );
 
