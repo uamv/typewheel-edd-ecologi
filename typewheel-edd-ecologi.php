@@ -51,3 +51,13 @@ function run_edd_ecologi() {
 
 }
 run_edd_ecologi();
+
+/**
+ *  Clean up the cron event
+ */
+register_deactivation_hook( __FILE__, function() {
+
+    $timestamp = wp_next_scheduled( 'typewheel_edde_do_every_three_hours' );
+    wp_unschedule_event( $timestamp, 'typewheel_edde_do_every_three_hours' );
+
+} );

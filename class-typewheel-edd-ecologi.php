@@ -12,6 +12,8 @@ class Typewheel_EDD_Ecologi {
     * Constructor
     *---------------------------------------------------------------------------------*/
 
+    private $api = 'https://public.ecologi.com';
+
     /**
     * Initialize the plugin by setting localization, filters, and administration functions.
     *
@@ -21,6 +23,14 @@ class Typewheel_EDD_Ecologi {
 
         add_action( 'edd_complete_download_purchase', [ $this, 'do_purchase_impact' ], 10, 3 );
         add_action( 'edd_recurring_record_payment', [ $this, 'do_renewal_impact' ], 10, 5 );
+
+        add_filter( 'cron_schedules', [ $this, 'add_schedule' ] );
+
+        if ( ! wp_next_scheduled( 'typewheel_edde_do_every_three_hours' ) ) {
+            wp_schedule_event( time(), 'every_three_hours', 'typewheel_edde_do_every_three_hours' );
+        }
+
+        add_action( 'typewheel_edde_do_every_three_hours', [ $this, 'retrieve_total_impact' ] );
 
     }
 
@@ -83,7 +93,7 @@ class Typewheel_EDD_Ecologi {
 
     public function plant_trees( $trees, $payment, $customer ) {
 
-        $response = wp_remote_post( 'https://public.ecologi.com/impact/trees', array(
+        $response = wp_remote_post( "{$this->api}/impact/trees", array(
             'headers' => array(
                 'Authorization' => 'Bearer ' . TYPEWHEEL_EDDE_ECOLOGI_API_KEY,
                 'Content-Type'  => 'application/json'
@@ -112,6 +122,8 @@ class Typewheel_EDD_Ecologi {
 
                 $customer->update_meta( '_typewheel_edd_ecologi_impact_trees', $customer_trees );
 
+                $this->retrieve_total_impact();
+
             }
 
         }
@@ -120,7 +132,7 @@ class Typewheel_EDD_Ecologi {
 
     public function offset_carbon( $kilograms, $payment, $customer ) {
 
-        $response = wp_remote_post( 'https://public.ecologi.com/impact/carbon', array(
+        $response = wp_remote_post( "{$this->api}/impact/carbon", array(
             'headers' => array(
                 'Authorization' => 'Bearer ' . TYPEWHEEL_EDDE_ECOLOGI_API_KEY,
                 'Content-Type'  => 'application/json'
@@ -150,9 +162,37 @@ class Typewheel_EDD_Ecologi {
 
                 $customer->update_meta( '_typewheel_edd_ecologi_impact_carbon', $customer_offset );
 
+                $this->retrieve_total_impact();
+
             }
 
         }
+
+    }
+
+    public function retrieve_total_impact() {
+
+        $response = wp_remote_get( "{$this->api}/users/" . TYPEWHEEL_EDDE_ECOLOGI_USERNAME . "/impact" );
+
+        if ( ! is_wp_error( $response ) ) {
+
+            $impact = json_decode( wp_remote_retrieve_body( $response ), true );
+
+            update_option( '_typewheel_edd_ecologi_impact', $impact );
+
+        }
+
+    }
+
+    public function add_schedule( $schedules ) {
+
+        // add an every three hours schedule to the available cron schedules
+        $schedules['every_three_hours'] = array(
+            'interval' => 3 * HOUR_IN_SECONDS,
+            'display' => __('Every three hours')
+        );
+
+        return $schedules;
 
     }
 

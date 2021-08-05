@@ -8,10 +8,11 @@ After installation, do the following to begin processing impact requests to the 
 Within your ecologi account, create an API key for usage with EDD purchases.
 
 ### Add API Key
-Within `wp-config.php`, add your API key as a constant.
+Within `wp-config.php`, add your API key and ecologi username as a constant.
 
 ```
 define( 'TYPEWHEEL_EDDE_ECOLOGI_API_KEY', 'your-key-goes-here' );
+define( 'TYPEWHEEL_EDDE_ECOLOGI_USERNAME', 'your-username-goes-here' );
 ```
 
 ### Configure Impact Breakpoints
