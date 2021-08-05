@@ -107,20 +107,20 @@ class Typewheel_EDD_Ecologi {
 
             $planted = json_decode( wp_remote_retrieve_body( $response ), true );
 
-            $payment->update_meta( '_typewheel_edd_ecologi_impact_trees', array( 'count' => $trees, 'url' => $planted['treeUrl'] ) );
+            $payment->update_meta( 'typewheel_edd_ecologi_impact_trees', array( 'count' => $trees, 'url' => $planted['treeUrl'] ) );
 
-            $customer_trees = $customer->get_meta( '_typewheel_edd_ecologi_impact_trees' );
+            $customer_trees = $customer->get_meta( 'typewheel_edd_ecologi_impact_trees' );
 
             if ( ! $customer_trees ) {
 
-                $customer->add_meta( '_typewheel_edd_ecologi_impact_trees', array( 'count' => $trees, 'urls' => array( $planted['treeUrl'] ) ) );
+                $customer->add_meta( 'typewheel_edd_ecologi_impact_trees', array( 'count' => $trees, 'urls' => array( $planted['treeUrl'] ) ) );
 
             } else {
 
                 $customer_trees['count'] = $customer_trees['count'] + $trees;
                 $customer_trees['urls'][] = $planted['treeUrl'];
 
-                $customer->update_meta( '_typewheel_edd_ecologi_impact_trees', $customer_trees );
+                $customer->update_meta( 'typewheel_edd_ecologi_impact_trees', $customer_trees );
 
                 $this->retrieve_total_impact();
 
@@ -147,20 +147,20 @@ class Typewheel_EDD_Ecologi {
 
             $offset = json_decode( wp_remote_retrieve_body( $response ), true );
 
-            $payment->update_meta( '_typewheel_edd_ecologi_impact_carbon', array( 'number' => $offset['number'], 'projects' => $offset['projectDetails'] ) );
+            $payment->update_meta( 'typewheel_edd_ecologi_impact_carbon', array( 'number' => $offset['number'], 'projects' => $offset['projectDetails'] ) );
 
-            $customer_offset = $customer->get_meta( '_typewheel_edd_ecologi_impact_carbon' );
+            $customer_offset = $customer->get_meta( 'typewheel_edd_ecologi_impact_carbon' );
 
             if ( ! $customer_offset ) {
 
-                $customer->add_meta( '_typewheel_edd_ecologi_impact_carbon', array( 'number' => $offset['number'], 'projects' => array( $offset['projectDetails'] ) ) );
+                $customer->add_meta( 'typewheel_edd_ecologi_impact_carbon', array( 'number' => $offset['number'], 'projects' => array( $offset['projectDetails'] ) ) );
 
             } else {
 
                 $customer_offset['number'] = $customer_offset['number'] + $offset['number'];
                 $customer_offset['projects'][] = $offset['projectDetails'];
 
-                $customer->update_meta( '_typewheel_edd_ecologi_impact_carbon', $customer_offset );
+                $customer->update_meta( 'typewheel_edd_ecologi_impact_carbon', $customer_offset );
 
                 $this->retrieve_total_impact();
 
@@ -178,7 +178,7 @@ class Typewheel_EDD_Ecologi {
 
             $impact = json_decode( wp_remote_retrieve_body( $response ), true );
 
-            update_option( '_typewheel_edd_ecologi_impact', $impact );
+            update_option( 'typewheel_edd_ecologi_impact', $impact );
 
         }
 
