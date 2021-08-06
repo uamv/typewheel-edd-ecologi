@@ -300,7 +300,7 @@ class Typewheel_EDD_Ecologi {
 
         $impact = get_option( 'typewheel_edd_ecologi_impact' );
 
-		return $impact['carbonOffset'] . ' Tonnes';
+		return $impact['carbonOffset'] . ' tonnes';
 
 	}
 
