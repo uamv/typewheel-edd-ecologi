@@ -41,22 +41,33 @@ add_filter( 'typewheel_edd_ecologi_impact', function( $impact ) {
 ```
 
 ## Email Tags
-The following tags can be used in EDD email templates
+The following tags can be used in EDD email templates. Formatted with units & text.
 
 ### Purchase Related
-{ecologi_purchase_tree_count} - Display the number of trees planted with this purchase.
-{ecologi_purchase_tree_url} - Display the unique URL of the trees planted with this purchase.
-{ecologi_purchase_carbon_offset} - Display the amount of carbon offset with this purchase.
-{ecologi_purchase_carbon_projects} - Display the projects involved in carbon offset with this purchase.
+`{ecologi_purchase_tree_count}` - Display the number of trees planted with this purchase.
+`{ecologi_purchase_tree_url}` - Display the unique URL of the trees planted with this purchase.
+`{ecologi_purchase_carbon_offset}` - Display the amount of carbon offset with this purchase *(in kg)*
+`{ecologi_purchase_carbon_projects}` - Display the projects involved in carbon offset with this purchase.
 
 ### Customer Related
-{ecologi_customer_tree_count} - Display the number of trees planted by this customer.
-{ecologi_customer_tree_url} - Display the unique URLs of the trees planted by this customer.
-{ecologi_customer_carbon_offset} - Display the amount of carbon offset by this customer.
+`{ecologi_customer_tree_count}` - Display the number of trees planted by this customer.
+`{ecologi_customer_carbon_offset}` - Display the amount of carbon offset by this customer. *(in kg)*
 
 ### ecologi User Related
-{ecologi_user_tree_count} - Display the total number of trees planted by your ecologi user.
-{ecologi_user_carbon_offset} - Display the amount of carbon offset by your ecologi user.
+`{ecologi_tree_count}` - Display the total number of trees planted by your ecologi user.
+`{ecologi_carbon_offset}` - Display the amount of carbon offset by your ecologi user. *(in tonnes)*
+
+## Shortcodes
+The following shortcodes can be used throughout your site. Returns number value only.
+
+### Customer Related
+`[ecologi_customer_tree_count]`
+`[ecologi_customer_carbon_offset]` *accepts units="kg" parameter (default is tonnes)*
+
+### ecologi User Related
+`[ecologi_tree_count]`
+`[ecologi_carbon_offset]` *accepts units="kg" parameter (default is tonnes)*
+
 
 ## Impact Tracking
 With each purchase and renewal that touches the ecologi Impact API, the plugin will save meta to both the EDD Payment and EDD Customer object. This data is structured as:

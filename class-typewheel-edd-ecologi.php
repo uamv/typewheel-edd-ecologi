@@ -34,6 +34,8 @@ class Typewheel_EDD_Ecologi {
 
         add_action( 'edd_add_email_tags', [ $this, 'add_email_tags' ], 100 );
 
+        $this->add_shortcodes();
+
     }
 
     /*---------------------------------------------------------------------------------*
@@ -200,111 +202,209 @@ class Typewheel_EDD_Ecologi {
 
     public function add_email_tags() {
 
-		edd_add_email_tag( 'ecologi_purchase_tree_count', 'Display the number of trees planted with this purchase', array( $this, 'render_ecologi_purchase_tree_count' ) );
-		edd_add_email_tag( 'ecologi_purchase_tree_url', 'Display the unique URL of the trees planted with this purchase', array( $this, 'render_ecologi_purchase_tree_url' ) );
-		edd_add_email_tag( 'ecologi_purchase_carbon_offset', 'Display the amount of carbon offset with this purchase', array( $this, 'render_ecologi_purchase_carbon_offset' ) );
-		edd_add_email_tag( 'ecologi_purchase_carbon_projects', 'Display the projects involved in carbon offset with this purchase', array( $this, 'render_ecologi_purchase_carbon_projects' ) );
+		edd_add_email_tag( 'ecologi_purchase_tree_count', 'Display the number of trees planted with this purchase', array( $this, 'render_email_tag_ecologi_purchase_tree_count' ) );
+		edd_add_email_tag( 'ecologi_purchase_tree_url', 'Display the unique URL of the trees planted with this purchase', array( $this, 'render_email_tag_ecologi_purchase_tree_url' ) );
+		edd_add_email_tag( 'ecologi_purchase_carbon_offset', 'Display the amount of carbon offset with this purchase', array( $this, 'render_email_tag_ecologi_purchase_carbon_offset' ) );
+		edd_add_email_tag( 'ecologi_purchase_carbon_projects', 'Display the projects involved in carbon offset with this purchase', array( $this, 'render_email_tag_ecologi_purchase_carbon_projects' ) );
 
-		edd_add_email_tag( 'ecologi_customer_tree_count', 'Display the number of trees planted by this customer', array( $this, 'render_ecologi_customer_tree_count' ) );
-		edd_add_email_tag( 'ecologi_customer_tree_url', 'Display the unique URLs of the trees planted by this customer', array( $this, 'render_ecologi_customer_tree_url' ) );
-		edd_add_email_tag( 'ecologi_customer_carbon_offset', 'Display the amount of carbon offset by this customer', array( $this, 'render_ecologi_customer_carbon_offset' ) );
+		edd_add_email_tag( 'ecologi_customer_tree_count', 'Display the number of trees planted by this customer', array( $this, 'render_email_tag_ecologi_customer_tree_count' ) );
+		edd_add_email_tag( 'ecologi_customer_carbon_offset', 'Display the amount of carbon offset by this customer', array( $this, 'render_email_tag_ecologi_customer_carbon_offset' ) );
 
-		edd_add_email_tag( 'ecologi_user_tree_count', 'Display the total number of trees planted by your ecologi user', array( $this, 'render_ecologi_user_tree_count' ) );
-		edd_add_email_tag( 'ecologi_user_carbon_offset', 'Display the amount of carbon offset by your ecologi user', array( $this, 'render_ecologi_user_carbon_offset' ) );
-
-	}
-
-	public function render_ecologi_purchase_tree_count( $payment_id = 0 ) {
-
-        $trees = ( new EDD_Payment( $payment_id ) )->get_meta( 'typewheel_edd_ecologi_impact_trees', true );
-
-		return sprintf( _n( '%s tree', '%s trees', $trees['count'] ), $trees['count'] );
+		edd_add_email_tag( 'ecologi_tree_count', 'Display the total number of trees planted by your ecologi user', array( $this, 'render_email_tag_ecologi_tree_count' ) );
+		edd_add_email_tag( 'ecologi_carbon_offset', 'Display the amount of carbon offset by your ecologi user', array( $this, 'render_email_tag_ecologi_carbon_offset' ) );
 
 	}
 
-	public function render_ecologi_purchase_tree_url( $payment_id = 0 ) {
+    public function add_shortcodes() {
 
-        $trees = ( new EDD_Payment( $payment_id ) )->get_meta( 'typewheel_edd_ecologi_impact_trees', true );
+        add_shortcode( 'ecologi_customer_tree_count', [ $this, 'render_shortcode_ecologi_customer_tree_count'] );
+        add_shortcode( 'ecologi_customer_carbon_offset', [ $this, 'render_shortcode_ecologi_customer_carbon_offset'] );
+        add_shortcode( 'ecologi_tree_count', [ $this, 'render_shortcode_ecologi_tree_count'] );
+        add_shortcode( 'ecologi_carbon_offset', [ $this, 'render_shortcode_ecologi_carbon_offset'] );
 
-		return $trees['url'];
+    }
+
+	public function render_email_tag_ecologi_purchase_tree_count( $payment_id = 0 ) {
+
+        $trees = Typewheel_EDD_Ecologi::get_trees( 'payment', $payment_id );
+
+        $tree_count = $trees ? sprintf( _n( '%s tree', '%s trees', $trees['count'] ), $trees['count'] ) : '';
+
+		return $tree_count;
 
 	}
 
-	public function render_ecologi_purchase_carbon_offset( $payment_id = 0 ) {
+	public function render_email_tag_ecologi_purchase_tree_url( $payment_id = 0 ) {
 
-        $carbon = ( new EDD_Payment( $payment_id ) )->get_meta( 'typewheel_edd_ecologi_impact_carbon', true );
+        $trees = Typewheel_EDD_Ecologi::get_trees( 'payment', $payment_id );
 
-		return $carbon['number'] . ' KG';
+        $tree_url = $trees ? $trees['url'] : '';
+
+		return $trees_url;
 
 	}
 
-	public function render_ecologi_purchase_carbon_projects( $payment_id = 0 ) {
+	public function render_email_tag_ecologi_purchase_carbon_offset( $payment_id = 0 ) {
 
-        $carbon = ( new EDD_Payment( $payment_id ) )->get_meta( 'typewheel_edd_ecologi_impact_carbon', true );
+        $carbon = Typewheel_EDD_Ecologi::get_carbon( 'payment', $payment_id );
 
-        $html = '<table><thead><tr><th>Project(s)</th><th colspan="2" style="width: 100px; text-align: right;">Carbon Offset</th></thead><tbody>';
+        $carbon_offset = $carbon ? $carbon['number'] . ' KG' : '';
 
-        foreach ( $carbon['projects'] as $project ) {
+		return $carbon_offset;
 
-            $kilograms = $project['splitAmountTonnes'] * 1000;
+	}
 
-            $html .= "<tr><td>{$project['name']}</td><td style='text-align: right;'>{$project['splitPercentage']}%</td><td style='text-align: right;'>{$kilograms} KG</td></tr>";
+	public function render_email_tag_ecologi_purchase_carbon_projects( $payment_id = 0 ) {
+
+        $carbon = Typewheel_EDD_Ecologi::get_carbon( 'payment', $payment_id );
+        $html = '';
+
+        if ( $carbon ) {
+
+            $html .= '<table><thead><tr><th>Project(s)</th><th colspan="2" style="width: 100px; text-align: right;">Carbon Offset</th></thead><tbody>';
+
+            foreach ( $carbon['projects'] as $project ) {
+
+                $kilograms = $project['splitAmountTonnes'] * 1000;
+
+                $html .= "<tr><td>{$project['name']}</td><td style='text-align: right;'>{$project['splitPercentage']}%</td><td style='text-align: right;'>{$kilograms} KG</td></tr>";
+
+            }
+
+            $html .= '</tbody></table>';
 
         }
-
-        $html .= '</tbody></table>';
 
 		return $html;
 
 	}
 
-	public function render_ecologi_customer_tree_count( $payment_id = 0 ) {
+    public function render_email_tag_ecologi_customer_tree_count( $payment_id = 0 ) {
 
         $customer_id = ( new EDD_Payment( $payment_id ) )->customer_id;
 
-        $trees = ( new EDD_Customer( $customer_id ) )->get_meta( 'typewheel_edd_ecologi_impact_trees', true );
+        $trees = Typewheel_EDD_Ecologi::get_trees( 'customer', $customer_id );
 
-		return sprintf( _n( '%s tree', '%s trees', $trees['count'] ), $trees['count'] );
+        return sprintf( _n( '%s tree', '%s trees', $trees['count'] ), $trees['count'] );
 
-	}
+    }
 
-	public function render_ecologi_customer_tree_url( $payment_id = 0 ) {
 
-        $customer_id = ( new EDD_Payment( $payment_id ) )->customer_id;
-
-        $trees = ( new EDD_Customer( $customer_id ) )->get_meta( 'typewheel_edd_ecologi_impact_trees', true );
-
-		return $trees['url'];
-
-	}
-
-	public function render_ecologi_customer_carbon_offset( $payment_id = 0 ) {
+	public function render_email_tag_ecologi_customer_carbon_offset( $payment_id = 0 ) {
 
         $customer_id = ( new EDD_Payment( $payment_id ) )->customer_id;
 
-        $carbon = ( new EDD_Customer( $customer_id ) )->get_meta( 'typewheel_edd_ecologi_impact_carbon', true );
+        $carbon = Typewheel_EDD_Ecologi::get_carbon( 'customer', $customer_id );
 
 		return $carbon['number'] . ' KG';
 
 	}
 
-    public function render_ecologi_user_tree_count( $payment_id = 0 ) {
+    public function render_email_tag_ecologi_tree_count( $payment_id = 0 ) {
 
-        $impact = get_option( 'typewheel_edd_ecologi_impact' );
+        $trees = Typewheel_EDD_Ecologi::get_trees();
 
-		return sprintf( _n( '%s tree', '%s trees', $impact['trees'] ), $impact['trees'] );
-
-	}
-
-	public function render_ecologi_user_carbon_offset( $payment_id = 0 ) {
-
-        $impact = get_option( 'typewheel_edd_ecologi_impact' );
-
-		return $impact['carbonOffset'] . ' tonnes';
+		return sprintf( _n( '%s tree', '%s trees', $trees ), $trees );
 
 	}
 
+	public function render_email_tag_ecologi_carbon_offset( $payment_id = 0 ) {
 
+        $carbon = Typewheel_EDD_Ecologi::get_carbon();
+
+		return $carbon . ' tonnes';
+
+	}
+
+    public function render_shortcode_ecologi_customer_tree_count( $atts ) {
+
+        $customer_id = ( new EDD_Customer( get_current_user_id(), true ) )->id;
+
+        $trees = Typewheel_EDD_Ecologi::get_trees( 'customer', $customer_id );
+
+        return $trees['count'];
+
+    }
+
+    public function render_shortcode_ecologi_customer_carbon_offset( $atts ) {
+
+        extract( shortcode_atts( array(
+            'units' => 'tonnes'
+        ), $atts ) );
+
+        $customer_id = ( new EDD_Customer( get_current_user_id(), true ) )->id;
+
+        $carbon = Typewheel_EDD_Ecologi::get_carbon( 'customer', $customer_id );
+
+        $carbon_offset = $units == 'kg' ? $carbon['number'] : $carbon['number'] / 1000;
+
+        return $carbon_offset;
+
+    }
+
+    public function render_shortcode_ecologi_tree_count( $atts ) {
+
+        return Typewheel_EDD_Ecologi::get_trees();
+
+    }
+
+    public function render_shortcode_ecologi_carbon_offset( $atts ) {
+
+        extract( shortcode_atts( array(
+            'units' => 'tonnes'
+        ), $atts ) );
+
+        $carbon = Typewheel_EDD_Ecologi::get_carbon();
+
+        $carbon_offset = $units == 'kg' ? $carbon * 1000 : $carbon;
+
+        return $carbon_offset;
+
+    }
+
+    public static function get_trees( $related_to = null, $object_id = 0 ) {
+
+        switch ( $related_to ) {
+
+            case 'payment':
+                return ( new EDD_Payment( $object_id ) )->get_meta( 'typewheel_edd_ecologi_impact_trees', true );
+
+            case 'customer':
+                return ( new EDD_Customer( $object_id ) )->get_meta( 'typewheel_edd_ecologi_impact_trees', true );
+
+            case 'user_wp':
+                return ( new EDD_Customer( $object_id, true ) )->get_meta( 'typewheel_edd_ecologi_impact_trees', true );
+
+            case 'user_ecologi':
+            default:
+                $impact = get_option( 'typewheel_edd_ecologi_impact' );
+                return $impact['trees'];
+
+        }
+
+    }
+
+    public static function get_carbon( $related_to = null, $object_id = 0 ) {
+
+        switch ( $related_to ) {
+
+            case 'payment':
+                return ( new EDD_Payment( $object_id ) )->get_meta( 'typewheel_edd_ecologi_impact_carbon', true );
+
+            case 'customer':
+                return ( new EDD_Customer( $object_id ) )->get_meta( 'typewheel_edd_ecologi_impact_carbon', true );
+
+            case 'user_wp':
+                return ( new EDD_Customer( $object_id, true ) )->get_meta( 'typewheel_edd_ecologi_impact_carbon', true );
+
+            case 'user_ecologi':
+            default:
+                $impact = get_option( 'typewheel_edd_ecologi_impact' );
+                return $impact['carbonOffset']; // in tonnes
+
+        }
+
+    }
 
 
 }
