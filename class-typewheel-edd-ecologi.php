@@ -26,11 +26,11 @@ class Typewheel_EDD_Ecologi {
 
         add_filter( 'cron_schedules', [ $this, 'add_schedule' ] );
 
-        if ( ! wp_next_scheduled( 'typewheel_edde_do_every_three_hours' ) ) {
-            wp_schedule_event( time(), 'every_three_hours', 'typewheel_edde_do_every_three_hours' );
+        if ( ! wp_next_scheduled( 'typewheel_edde_do_every_eight_hours' ) ) {
+            wp_schedule_event( time(), 'every_eight_hours', 'typewheel_edde_do_every_eight_hours' );
         }
 
-        add_action( 'typewheel_edde_do_every_three_hours', [ $this, 'retrieve_total_impact' ] );
+        add_action( 'typewheel_edde_do_every_eight_hours', [ $this, 'retrieve_total_impact' ] );
 
         add_action( 'edd_add_email_tags', [ $this, 'add_email_tags' ], 100 );
 
@@ -191,9 +191,9 @@ class Typewheel_EDD_Ecologi {
     public function add_schedule( $schedules ) {
 
         // add an every three hours schedule to the available cron schedules
-        $schedules['every_three_hours'] = array(
-            'interval' => 3 * HOUR_IN_SECONDS,
-            'display' => __('Every three hours')
+        $schedules['every_eight_hours'] = array(
+            'interval' => 8 * HOUR_IN_SECONDS,
+            'display' => __('Every eight hours')
         );
 
         return $schedules;
