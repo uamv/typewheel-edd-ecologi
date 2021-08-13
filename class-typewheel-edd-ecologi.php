@@ -13,6 +13,7 @@ class Typewheel_EDD_Ecologi {
     *---------------------------------------------------------------------------------*/
 
     private $api = 'https://public.ecologi.com';
+    private $mode =  'live';
 
     /**
     * Initialize the plugin by setting localization, filters, and administration functions.
@@ -20,6 +21,8 @@ class Typewheel_EDD_Ecologi {
     * @since     1.0
     */
     public function run() {
+
+        $this->mode = defined( 'TYPEWHEEL_EDDE_ECOLOGI_TEST' ) && TYPEWHEEL_EDDE_ECOLOGI_TEST ? 'test' : 'live';
 
         add_action( 'edd_complete_download_purchase', [ $this, 'do_purchase_impact' ], 10, 3 );
         add_action( 'edd_recurring_record_payment', [ $this, 'do_renewal_impact' ], 10, 5 );
@@ -46,16 +49,17 @@ class Typewheel_EDD_Ecologi {
 
         $payment = new EDD_Payment( $payment_id );
         $customer = new EDD_Customer( $payment->customer_id );
+        $this->mode = $payment->mode == 'test' ? 'test' : 'live';
 
         $ecologi = apply_filters( 'typewheel_edd_ecologi_impact', [] );
 
-        if ( $payment->mode != 'test' && defined( 'TYPEWHEEL_EDDE_ECOLOGI_API_KEY' ) && is_array( $ecologi ) && array_key_exists( 'edd_purchase', $ecologi ) ) {
+        if ( defined( 'TYPEWHEEL_EDDE_ECOLOGI_API_KEY' ) && is_array( $ecologi ) && array_key_exists( 'edd_purchase', $ecologi ) ) {
 
             $breakpoints = array_reverse( $ecologi['edd_purchase'], true );
 
             foreach ( $breakpoints as $amount => $impact ) {
 
-                if ( $payment->total > (int) $amount  ) {
+                if ( $payment->total >= (int) $amount  ) {
 
                     if ( is_array( $impact ) && array_key_exists( 'trees', $impact ) && $impact['trees'] !== 0 ) $this->plant_trees( $impact['trees'], $payment, $customer );
                     if ( is_array( $impact ) && array_key_exists( 'carbon', $impact ) && $impact['carbon'] !== 0 ) $this->offset_carbon( $impact['carbon'], $payment, $customer );
@@ -72,16 +76,17 @@ class Typewheel_EDD_Ecologi {
     public function do_renewal_impact( $payment, $parent_id, $amount, $txn_id, $unique_key ) {
 
         $customer = new EDD_Customer( $payment->customer_id );
+        $this->mode = $payment->mode == 'test' ? 'test' : 'live';
 
         $ecologi = apply_filters( 'typewheel_edd_ecologi_impact', [] );
 
-        if ( $payment->mode != 'test' && defined( 'TYPEWHEEL_EDDE_ECOLOGI_API_KEY' ) && is_array( $ecologi ) && array_key_exists( 'edd_renewal', $ecologi ) ) {
+        if ( defined( 'TYPEWHEEL_EDDE_ECOLOGI_API_KEY' ) && is_array( $ecologi ) && array_key_exists( 'edd_renewal', $ecologi ) ) {
 
             $breakpoints = array_reverse( $ecologi['edd_renewal'] );
 
             foreach ( $breakpoints as $amount => $impact ) {
 
-                if ( $payment->total > (int) $amount  ) {
+                if ( $payment->total >= (int) $amount  ) {
 
                     if ( is_array( $impact ) && array_key_exists( 'trees', $impact ) && $impact['trees'] !== 0 ) $this->plant_trees( $impact['trees'], $payment, $customer );
                     if ( is_array( $impact ) && array_key_exists( 'carbon', $impact ) && $impact['carbon'] !== 0 ) $this->offset_carbon( $impact['carbon'], $payment, $customer );
@@ -103,7 +108,8 @@ class Typewheel_EDD_Ecologi {
                 'Content-Type'  => 'application/json'
             ),
             'body' => json_encode( array(
-                'number' => $trees
+                'number' => $trees,
+                'test' => $this->mode == 'test'
             ) )
         ) );
 
@@ -143,7 +149,8 @@ class Typewheel_EDD_Ecologi {
             ),
             'body' => json_encode( array(
                 'number' => $kilograms,
-                'units' => 'KG'
+                'units' => 'KG',
+                'test' => $this->mode == 'test'
             ) )
         ) );
 
@@ -174,15 +181,25 @@ class Typewheel_EDD_Ecologi {
 
     }
 
-    public function retrieve_total_impact() {
+    public static function retrieve_total_impact( $username = TYPEWHEEL_EDDE_ECOLOGI_USERNAME ) {
 
-        $response = wp_remote_get( "{$this->api}/users/" . TYPEWHEEL_EDDE_ECOLOGI_USERNAME . "/impact" );
+        $response = wp_remote_get( "https://public.ecologi.com/users/{$username}/impact" );
 
         if ( ! is_wp_error( $response ) ) {
 
             $impact = json_decode( wp_remote_retrieve_body( $response ), true );
 
-            update_option( 'typewheel_edd_ecologi_impact', $impact );
+            if ( $username == TYPEWHEEL_EDDE_ECOLOGI_USERNAME ) {
+
+                update_option( 'typewheel_edd_ecologi_impact', $impact );
+
+            }
+
+            return $impact;
+
+        } else {
+
+            return false;
 
         }
 

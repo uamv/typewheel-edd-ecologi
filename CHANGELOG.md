@@ -1,3 +1,10 @@
+## 1.4 // 2021.08-Aug.12 =
+📦 NEW: Adds test mode
+📦 NEW: Allows retrieving totals for any Ecologi account
+👌 IMPROVE: Allows retrieval of any ecologi user totals
+👌 IMPROVE: Changes cron to every 8 hours
+
+
 ## 1.3 // 2021.08-Aug.07 =
 📦 NEW: Adds multiple shortcodes
 🐛 FIX: Fixes some values in email tags
