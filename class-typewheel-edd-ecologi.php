@@ -39,6 +39,15 @@ class Typewheel_EDD_Ecologi {
 
         $this->add_shortcodes();
 
+        if ( apply_filters( 'typewheel-edd-ecologi/show_in_history', true ) ) {
+            add_action( 'edd_purchase_history_header_after', [ $this, 'add_purchase_history_header' ], 100 );
+            add_action( 'edd_purchase_history_row_end', [ $this, 'add_purchase_history_column' ], 100, 2 );
+        }
+
+        if ( apply_filters( 'typewheel-edd-ecologi/show_in_receipt', true ) ) {
+            add_action( 'edd_payment_receipt_after', [ $this, 'add_purchase_receipt_row' ], 100, 2 );
+        }
+
     }
 
     /*---------------------------------------------------------------------------------*
@@ -265,7 +274,7 @@ class Typewheel_EDD_Ecologi {
 
         $carbon = Typewheel_EDD_Ecologi::get_carbon( 'payment', $payment_id );
 
-        $carbon_offset = $carbon ? $carbon['number'] . ' KG' : '';
+        $carbon_offset = $carbon ? $carbon['number'] . ' kgCO<sub>2</sub>e' : '';
 
 		return $carbon_offset;
 
@@ -423,5 +432,43 @@ class Typewheel_EDD_Ecologi {
 
     }
 
+    public function add_purchase_history_header() {
+
+        echo '<th class="edd_purchase_impact">Impact</th>';
+
+    }
+
+    public function add_purchase_history_column( $payment_id, $payment_meta ) {
+
+        $trees = ( new EDD_Payment( $payment_id ) )->get_meta( 'typewheel_edd_ecologi_impact_trees', true );
+        $carbon = ( new EDD_Payment( $payment_id ) )->get_meta( 'typewheel_edd_ecologi_impact_carbon', true );
+
+        if ( $trees || $carbon ) {
+
+            $separator = $trees['count'] && $carbon['number'] ? ' & ' : '';
+
+            echo "<td class='edd_purchase_trees'><a href='{$trees['url']}'>" . $this->render_email_tag_ecologi_purchase_tree_count( $payment_id ) . "</a>${separator}" . $this->render_email_tag_ecologi_purchase_carbon_offset( $payment_id ) . "</td>";
+
+        } else {
+
+            echo '<td></td>';
+
+        }
+
+
+    }
+
+    public function add_purchase_receipt_row( $payment, $edd_receipt_args ) {
+
+        $trees = ( new EDD_Payment( $payment->ID ) )->get_meta( 'typewheel_edd_ecologi_impact_trees', true );
+
+        echo '<tr><td valign="top"><strong>Ecologi Impact:</strong></td>';
+        echo '<td class="edd_purchase_impact">';
+        echo '<a href="' . $trees['url'] . '" style="display:block;margin-bottom: .75em;">' . $this->render_email_tag_ecologi_purchase_tree_count( $payment->ID ) . '</a>';
+        echo $this->render_email_tag_ecologi_purchase_carbon_projects( $payment->ID );
+        echo '</td>';
+        echo '</tr>';
+
+    }
 
 }

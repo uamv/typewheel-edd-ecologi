@@ -1,9 +1,10 @@
-## 1.4 // 2021.08-Aug.12 =
+## 1.4 // 2021.08-Aug.13 =
 📦 NEW: Adds test mode
 📦 NEW: Allows retrieving totals for any Ecologi account
+📦 NEW: Adds impact to purchase history table
+📦 NEW: Adds impact to receipt detail table
 👌 IMPROVE: Allows retrieval of any ecologi user totals
 👌 IMPROVE: Changes cron to every 8 hours
-
 
 ## 1.3 // 2021.08-Aug.07 =
 📦 NEW: Adds multiple shortcodes
