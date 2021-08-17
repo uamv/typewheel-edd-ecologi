@@ -6,6 +6,7 @@
 📦 NEW: Adds filter to allow passing funded_by name
 👌 IMPROVE: Allows retrieval of any ecologi user totals
 👌 IMPROVE: Changes cron to every 8 hours
+👌 IMPROVE: Standardized filter naming
 🐛 FIX: Does not process on Test Payment gateway
 
 ## 1.3 // 2021.08-Aug.07 =

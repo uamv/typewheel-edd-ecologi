@@ -60,7 +60,7 @@ class Typewheel_EDD_Ecologi {
         $customer = new EDD_Customer( $payment->customer_id );
         $this->mode = $payment->mode == 'test' || $payment->gateway == 'manual' ? 'test' : 'live';
 
-        $ecologi = apply_filters( 'typewheel_edd_ecologi_impact', [] );
+        $ecologi = apply_filters( 'typewheel-edd-ecologi/impact', [] );
 
         if ( defined( 'TYPEWHEEL_EDDE_ECOLOGI_API_KEY' ) && is_array( $ecologi ) && array_key_exists( 'edd_purchase', $ecologi ) ) {
 
@@ -87,7 +87,7 @@ class Typewheel_EDD_Ecologi {
         $customer = new EDD_Customer( $payment->customer_id );
         $this->mode = $payment->mode == 'test' || $payment->gateway == 'manual' ? 'test' : 'live';
 
-        $ecologi = apply_filters( 'typewheel_edd_ecologi_impact', [] );
+        $ecologi = apply_filters( 'typewheel-edd-ecologi/impact', [] );
 
         if ( defined( 'TYPEWHEEL_EDDE_ECOLOGI_API_KEY' ) && is_array( $ecologi ) && array_key_exists( 'edd_renewal', $ecologi ) ) {
 

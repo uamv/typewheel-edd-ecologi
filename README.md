@@ -18,7 +18,7 @@ define( 'TYPEWHEEL_EDDE_ECOLOGI_USERNAME', 'your-username-goes-here' );
 ### Configure Impact Breakpoints
 Return an array of ecologi impact that will be run for various purchase and renewal amounts. The impact array you set for a value will apply to all values above the associated key and up to the next associated key.
 ```
-add_filter( 'typewheel_edd_ecologi_impact', function( $impact ) {
+add_filter( 'typewheel-edd-ecologi/impact', function( $impact ) {
 
     return array(
         'edd_purchase' => array
