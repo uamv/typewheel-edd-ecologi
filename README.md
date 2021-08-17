@@ -5,10 +5,10 @@ Should you like to show your appreciation for this contribution to the community
 After installation, do the following to begin processing impact requests to the [ecologi API](https://docs.ecologi.com/docs/public-api-docs/API/Impact-API.v1.yaml).
 
 ### Retrieve API Key
-Within your ecologi account, create an API key for usage with EDD purchases.
+Within your [ecologi account](https://ecologi.com/settings/), create an API key for usage with EDD purchases.
 
 ### Add API Key
-Within `wp-config.php`, add your API key and ecologi username as a constant.
+Within `wp-config.php`, add your API key and ecologi username as constants.
 
 ```
 define( 'TYPEWHEEL_EDDE_ECOLOGI_API_KEY', 'your-key-goes-here' );
@@ -18,7 +18,7 @@ define( 'TYPEWHEEL_EDDE_ECOLOGI_USERNAME', 'your-username-goes-here' );
 ### Configure Impact Breakpoints
 Return an array of ecologi impact that will be run for various purchase and renewal amounts. The impact array you set for a value will apply to all values above the associated key and up to the next associated key.
 ```
-add_filter( 'typewheel_edd_ecologi_impact', function( $impact ) {
+add_filter( 'typewheel-edd-ecologi/impact', function( $impact ) {
 
     return array(
         'edd_purchase' => array

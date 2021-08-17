@@ -3,13 +3,13 @@
 * Plugin Name: EDD Ecologi
 * Plugin URI: http://typewheel.xyz
 * Description: Plant trees and/or offset carbon via ecologi for every EDD purchase and/or renewal
-* Version: 1.3
+* Version: 1.4
 * Author: Typewheel
 * Author URI: http://typewheel.xyz
 * Text Domain: typewheel-edde
 *
 * @package Typewheel
-* @version 1.3
+* @version 1.4
 * @author uamv
 * @copyright Copyright (c) 2021, Typewheel
 * @link http://typewheel.xyz
@@ -25,7 +25,7 @@ if ( ! defined( 'WPINC' ) ) {
 * Define constants.
 */
 
-define( 'TYPEWHEEL_EDDE_VERSION', '1.3' );
+define( 'TYPEWHEEL_EDDE_VERSION', '1.4' );
 define( 'TYPEWHEEL_EDDE_DIR_PATH', plugin_dir_path( __FILE__ ) );
 define( 'TYPEWHEEL_EDDE_DIR_URL', plugin_dir_url( __FILE__ ) );
 
@@ -57,7 +57,7 @@ run_edd_ecologi();
  */
 register_deactivation_hook( __FILE__, function() {
 
-    $timestamp = wp_next_scheduled( 'typewheel_edde_do_every_three_hours' );
-    wp_unschedule_event( $timestamp, 'typewheel_edde_do_every_three_hours' );
+    $timestamp = wp_next_scheduled( 'typewheel_edde_do_every_eight_hours' );
+    wp_unschedule_event( $timestamp, 'typewheel_edde_do_every_eight_hours' );
 
 } );
