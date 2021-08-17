@@ -58,7 +58,7 @@ class Typewheel_EDD_Ecologi {
 
         $payment = new EDD_Payment( $payment_id );
         $customer = new EDD_Customer( $payment->customer_id );
-        $this->mode = $payment->mode == 'test' ? 'test' : 'live';
+        $this->mode = $payment->mode == 'test' || $payment->gateway == 'manual' ? 'test' : 'live';
 
         $ecologi = apply_filters( 'typewheel_edd_ecologi_impact', [] );
 
@@ -85,7 +85,7 @@ class Typewheel_EDD_Ecologi {
     public function do_renewal_impact( $payment, $parent_id, $amount, $txn_id, $unique_key ) {
 
         $customer = new EDD_Customer( $payment->customer_id );
-        $this->mode = $payment->mode == 'test' ? 'test' : 'live';
+        $this->mode = $payment->mode == 'test' || $payment->gateway == 'manual' ? 'test' : 'live';
 
         $ecologi = apply_filters( 'typewheel_edd_ecologi_impact', [] );
 
@@ -111,15 +111,23 @@ class Typewheel_EDD_Ecologi {
 
     public function plant_trees( $trees, $payment, $customer ) {
 
+        $body = array(
+            'number' => $trees,
+            'test' => $this->mode == 'test'
+        );
+
+        $funded_by = apply_filters( 'typewheel-edd-ecologi/funded_by', '', $payment, $customer );
+
+        if ( $funded_by != '' ) {
+            $body['name'] = $funded_by;
+        }
+
         $response = wp_remote_post( "{$this->api}/impact/trees", array(
             'headers' => array(
                 'Authorization' => 'Bearer ' . TYPEWHEEL_EDDE_ECOLOGI_API_KEY,
                 'Content-Type'  => 'application/json'
             ),
-            'body' => json_encode( array(
-                'number' => $trees,
-                'test' => $this->mode == 'test'
-            ) )
+            'body' => json_encode( $body )
         ) );
 
         if ( ! is_wp_error( $response ) ) {

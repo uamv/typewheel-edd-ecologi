@@ -1,10 +1,12 @@
-## 1.4 // 2021.08-Aug.13 =
+## 1.4 // 2021.08-Aug.16 =
 📦 NEW: Adds test mode
 📦 NEW: Allows retrieving totals for any Ecologi account
 📦 NEW: Adds impact to purchase history table
 📦 NEW: Adds impact to receipt detail table
+📦 NEW: Adds filter to allow passing funded_by name
 👌 IMPROVE: Allows retrieval of any ecologi user totals
 👌 IMPROVE: Changes cron to every 8 hours
+🐛 FIX: Does not process on Test Payment gateway
 
 ## 1.3 // 2021.08-Aug.07 =
 📦 NEW: Adds multiple shortcodes
