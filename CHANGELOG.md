@@ -1,3 +1,7 @@
+## 1.5 // 2021.08-Aug.18 =
+👌 IMPROVE: Reduces requests to Ecologi API
+🐛 FIX: Uses non-deprecated renewal hook
+
 ## 1.4 // 2021.08-Aug.16 =
 📦 NEW: Adds test mode
 📦 NEW: Allows retrieving totals for any Ecologi account
