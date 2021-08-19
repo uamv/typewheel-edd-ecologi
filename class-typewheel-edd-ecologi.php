@@ -25,7 +25,7 @@ class Typewheel_EDD_Ecologi {
         $this->mode = defined( 'TYPEWHEEL_EDDE_ECOLOGI_TEST' ) && TYPEWHEEL_EDDE_ECOLOGI_TEST ? 'test' : 'live';
 
         add_action( 'edd_complete_download_purchase', [ $this, 'do_purchase_impact' ], 10, 3 );
-        add_action( 'edd_recurring_record_payment', [ $this, 'do_renewal_impact' ], 10, 5 );
+        add_action( 'edd_recurring_add_subscription_payment', [ $this, 'do_renewal_impact' ], 10, 2 );
 
         add_filter( 'cron_schedules', [ $this, 'add_schedule' ] );
 
@@ -78,11 +78,13 @@ class Typewheel_EDD_Ecologi {
 
             }
 
+            $this->retrieve_total_impact();
+
         }
 
     }
 
-    public function do_renewal_impact( $payment, $parent_id, $amount, $txn_id, $unique_key ) {
+    public function do_renewal_impact( $payment, $subscription ) {
 
         $customer = new EDD_Customer( $payment->customer_id );
         $this->mode = $payment->mode == 'test' || $payment->gateway == 'manual' ? 'test' : 'live';
@@ -104,6 +106,8 @@ class Typewheel_EDD_Ecologi {
                 }
 
             }
+
+            $this->retrieve_total_impact();
 
         }
 
@@ -151,8 +155,6 @@ class Typewheel_EDD_Ecologi {
 
             }
 
-            $this->retrieve_total_impact();
-
         }
 
     }
@@ -191,8 +193,6 @@ class Typewheel_EDD_Ecologi {
                 $customer->update_meta( 'typewheel_edd_ecologi_impact_carbon', $customer_offset );
 
             }
-
-            $this->retrieve_total_impact();
 
         }
 
