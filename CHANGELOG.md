@@ -1,3 +1,6 @@
+## 1.6 // 2021.08-Aug.26 =
+🐛 FIX: Preserve impact array keys when processing renewal
+
 ## 1.5 // 2021.08-Aug.18 =
 👌 IMPROVE: Reduces requests to Ecologi API
 🐛 FIX: Uses non-deprecated renewal hook

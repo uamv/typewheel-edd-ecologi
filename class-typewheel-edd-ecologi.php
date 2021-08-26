@@ -93,7 +93,7 @@ class Typewheel_EDD_Ecologi {
 
         if ( defined( 'TYPEWHEEL_EDDE_ECOLOGI_API_KEY' ) && is_array( $ecologi ) && array_key_exists( 'edd_renewal', $ecologi ) ) {
 
-            $breakpoints = array_reverse( $ecologi['edd_renewal'] );
+            $breakpoints = array_reverse( $ecologi['edd_renewal'], true );
 
             foreach ( $breakpoints as $amount => $impact ) {
 
