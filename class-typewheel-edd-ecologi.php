@@ -22,7 +22,9 @@ class Typewheel_EDD_Ecologi {
     */
     public function run() {
 
-        $this->mode = defined( 'TYPEWHEEL_EDDE_ECOLOGI_TEST' ) && TYPEWHEEL_EDDE_ECOLOGI_TEST ? 'test' : 'live';
+        if ( defined( 'TYPEWHEEL_EDDE_ECOLOGI_TEST' ) && ! TYPEWHEEL_EDDE_ECOLOGI_TEST ) {
+            $this->mode = 'test';
+        }
 
         add_action( 'edd_complete_download_purchase', [ $this, 'do_purchase_impact' ], 10, 3 );
         add_action( 'edd_recurring_add_subscription_payment', [ $this, 'do_renewal_impact' ], 10, 2 );

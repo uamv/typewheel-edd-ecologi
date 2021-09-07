@@ -1,3 +1,6 @@
+## 1.7 // 2021.09-Sep.07 =
+🐛 FIX: Ensures proper test mode check
+
 ## 1.6 // 2021.08-Aug.26 =
 🐛 FIX: Preserve impact array keys when processing renewal
 
