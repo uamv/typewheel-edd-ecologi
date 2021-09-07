@@ -1,3 +1,6 @@
+## 2.0.0 // 2021.09-Sep.07 =
+📦 NEW: Adds EDD licensing and update engine
+
 ## 1.7 // 2021.09-Sep.07 =
 🐛 FIX: Ensures proper test mode check
 
