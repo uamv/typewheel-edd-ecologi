@@ -276,7 +276,7 @@ class Typewheel_EDD_Ecologi {
 
         $tree_url = $trees ? $trees['url'] : '';
 
-		return $trees_url;
+		return $tree_url;
 
 	}
 

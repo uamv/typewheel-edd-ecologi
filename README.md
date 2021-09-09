@@ -1,5 +1,5 @@
 ## Credit & Gratitude
-Should you like to show your appreciation for this contribution to the community, I ask that you [help plant this forest](https://ecologi.com/gravityhopper?r=6102fa245a5109238b1f2de6) for [Gravity Hopper](https://gravityhopper.com) – the first site upon which this plugin has run.
+Should you like to show your appreciation for this contribution to the community, I ask that you [help plant this forest](https://ecologi.com/typewheel?r=6102fa245a5109238b1f2de6).
 
 ## Installation & Setup
 After installation, do the following to begin processing impact requests to the [ecologi API](https://docs.ecologi.com/docs/public-api-docs/API/Impact-API.v1.yaml).
