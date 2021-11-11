@@ -1,3 +1,6 @@
+## 2.0.2 // 2021.11-Nov.11
+🐛 FIX: Proper check for manual_purchases gateway
+
 ## 2.0.1 // 2021.09-Sep.09
 🐛 FIX: Properly returns URL for email tag {ecologi_purchase_tree_url}
 

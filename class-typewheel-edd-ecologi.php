@@ -60,27 +60,31 @@ class Typewheel_EDD_Ecologi {
 
         $payment = new EDD_Payment( $payment_id );
         $customer = new EDD_Customer( $payment->customer_id );
-        $this->mode = $payment->mode == 'test' || $payment->gateway == 'manual' ? 'test' : 'live';
+        $this->mode = $payment->mode == 'test' ? 'test' : 'live';
 
-        $ecologi = apply_filters( 'typewheel-edd-ecologi/impact', [] );
+        if ( $payment->gateway != 'manual_purchases' || apply_filters( 'typewheel-edd-ecologi/impact_on_manual_purchases', false ) ) {
 
-        if ( defined( 'TYPEWHEEL_EDDE_ECOLOGI_API_KEY' ) && is_array( $ecologi ) && array_key_exists( 'edd_purchase', $ecologi ) ) {
+            $ecologi = apply_filters( 'typewheel-edd-ecologi/impact', [] );
 
-            $breakpoints = array_reverse( $ecologi['edd_purchase'], true );
+            if ( defined( 'TYPEWHEEL_EDDE_ECOLOGI_API_KEY' ) && is_array( $ecologi ) && array_key_exists( 'edd_purchase', $ecologi ) ) {
 
-            foreach ( $breakpoints as $amount => $impact ) {
+                $breakpoints = array_reverse( $ecologi['edd_purchase'], true );
 
-                if ( $payment->total >= (int) $amount  ) {
+                foreach ( $breakpoints as $amount => $impact ) {
 
-                    if ( is_array( $impact ) && array_key_exists( 'trees', $impact ) && $impact['trees'] !== 0 ) $this->plant_trees( $impact['trees'], $payment, $customer );
-                    if ( is_array( $impact ) && array_key_exists( 'carbon', $impact ) && $impact['carbon'] !== 0 ) $this->offset_carbon( $impact['carbon'], $payment, $customer );
-                    break;
+                    if ( $payment->total >= (int) $amount  ) {
+
+                        if ( is_array( $impact ) && array_key_exists( 'trees', $impact ) && $impact['trees'] !== 0 ) $this->plant_trees( $impact['trees'], $payment, $customer );
+                        if ( is_array( $impact ) && array_key_exists( 'carbon', $impact ) && $impact['carbon'] !== 0 ) $this->offset_carbon( $impact['carbon'], $payment, $customer );
+                        break;
+
+                    }
 
                 }
 
-            }
+                $this->retrieve_total_impact();
 
-            $this->retrieve_total_impact();
+            }
 
         }
 
@@ -89,27 +93,31 @@ class Typewheel_EDD_Ecologi {
     public function do_renewal_impact( $payment, $subscription ) {
 
         $customer = new EDD_Customer( $payment->customer_id );
-        $this->mode = $payment->mode == 'test' || $payment->gateway == 'manual' ? 'test' : 'live';
+        $this->mode = $payment->mode == 'test' ? 'test' : 'live';
 
-        $ecologi = apply_filters( 'typewheel-edd-ecologi/impact', [] );
+        if ( $payment->gateway != 'manual_purchases' || apply_filters( 'typewheel-edd-ecologi/impact_on_manual_purchases', false ) ) {
 
-        if ( defined( 'TYPEWHEEL_EDDE_ECOLOGI_API_KEY' ) && is_array( $ecologi ) && array_key_exists( 'edd_renewal', $ecologi ) ) {
+            $ecologi = apply_filters( 'typewheel-edd-ecologi/impact', [] );
 
-            $breakpoints = array_reverse( $ecologi['edd_renewal'], true );
+            if ( defined( 'TYPEWHEEL_EDDE_ECOLOGI_API_KEY' ) && is_array( $ecologi ) && array_key_exists( 'edd_renewal', $ecologi ) ) {
 
-            foreach ( $breakpoints as $amount => $impact ) {
+                $breakpoints = array_reverse( $ecologi['edd_renewal'], true );
 
-                if ( $payment->total >= (int) $amount  ) {
+                foreach ( $breakpoints as $amount => $impact ) {
 
-                    if ( is_array( $impact ) && array_key_exists( 'trees', $impact ) && $impact['trees'] !== 0 ) $this->plant_trees( $impact['trees'], $payment, $customer );
-                    if ( is_array( $impact ) && array_key_exists( 'carbon', $impact ) && $impact['carbon'] !== 0 ) $this->offset_carbon( $impact['carbon'], $payment, $customer );
-                    break;
+                    if ( $payment->total >= (int) $amount  ) {
+
+                        if ( is_array( $impact ) && array_key_exists( 'trees', $impact ) && $impact['trees'] !== 0 ) $this->plant_trees( $impact['trees'], $payment, $customer );
+                        if ( is_array( $impact ) && array_key_exists( 'carbon', $impact ) && $impact['carbon'] !== 0 ) $this->offset_carbon( $impact['carbon'], $payment, $customer );
+                        break;
+
+                    }
 
                 }
 
-            }
+                $this->retrieve_total_impact();
 
-            $this->retrieve_total_impact();
+            }
 
         }
 
